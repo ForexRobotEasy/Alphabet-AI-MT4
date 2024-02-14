@@ -1,0 +1,94 @@
+
+// Developer: Forex Robot Easy Team
+// Website: forexroboteasy.com
+// Program Name: Alphabet AI MT4
+
+// Required Libraries
+#include <stdio.mqh>
+#include <stdlib.mqh>
+
+// Global Variables
+double stopLoss = 0.0;
+double takeProfit = 0.0;
+
+// Main Function
+void OnTick()
+{
+    // Get current market data
+    double currentPrice = MarketInfo(Symbol(), MODE_BID);
+    double averagePrice = CalculateAveragePrice();
+
+    // Check for mean reversion trading opportunities
+    if (currentPrice > averagePrice + stopLoss)
+    {
+        // Execute mean reversion strategy
+        OpenSellOrder();
+    }
+    else if (currentPrice < averagePrice - stopLoss)
+    {
+        // Execute mean reversion strategy
+        OpenBuyOrder();
+    }
+    else
+    {
+        // Execute MLP strategy
+        ExecuteMLPStrategy();
+    }
+}
+
+// Helper Function to Calculate Average Price
+double CalculateAveragePrice()
+{
+    double sum = 0.0;
+    int count = 0;
+
+    // Loop through historical data
+    for (int i = 0; i < 2000; i++)
+    {
+        double price = iClose(Symbol(), PERIOD_D1, i);
+
+        // Exclude weekends and holidays
+        if (price != 0.0)
+        {
+            sum += price;
+            count++;
+        }
+    }
+
+    // Calculate average price
+    double averagePrice = sum / count;
+
+    return averagePrice;
+}
+
+// Function to Open Sell Order
+void OpenSellOrder()
+{
+    // Set stop-loss and take-profit levels
+    double sl = Ask + stopLoss;
+    double tp = Ask - takeProfit;
+
+    // Execute sell order
+    OrderSend(Symbol(), OP_SELL, 0.01, Ask, 10, sl, tp);
+}
+
+// Function to Open Buy Order
+void OpenBuyOrder()
+{
+    // Set stop-loss and take-profit levels
+    double sl = Bid - stopLoss;
+    double tp = Bid + takeProfit;
+
+    // Execute buy order
+    OrderSend(Symbol(), OP_BUY, 0.01, Bid, 10, sl, tp);
+}
+
+// Function to Execute MLP Strategy
+void ExecuteMLPStrategy()
+{
+    // Implement MLP strategy logic here
+    // ...
+    // ...
+    // Logical conclusion for the code
+    Print('Trading robot execution complete.');
+}
